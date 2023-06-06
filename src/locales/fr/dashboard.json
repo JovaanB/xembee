@@ -1,0 +1,13 @@
+{
+  "title": "Tableau de bord",
+  "welcome": {
+    "title": "Bienvenue sur Xembee",
+    "description": "Retrouvez ici toutes vos statistiques et données concernant votre compte Xembee."
+  },
+  "warning": {
+    "noModuleSelected": "Aucun module sélectionné. Vous pouvez voir les statistiques de tous vos modules ci-dessous."
+  },
+  "selectModule": "Sélectionner un module",
+  "instantEnergy": "Energie instantanée",
+  "dailyEnergy": "Energie journalière"
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Dashboard",
+  "welcome": {
+    "title": "Welcome to Xembee",
+    "description": "Retrieve here all your statistics and data about your Xembee account."
+  },
+  "warning": {
+    "noModuleSelected": "No module selected. Here you can see the statistics for all the modules."
+  },
+  "selectModule": "Select a module",
+  "instantEnergy": "Instant energy",
+  "dailyEnergy": "Daily energy"
+}
