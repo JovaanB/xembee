@@ -61,88 +61,88 @@ export default function PageDashboard() {
     dailyEnergyPercentage,
   } = selectedModule;
 
+  const generateRandomNumber = ({ min, max }: { min: number; max: number }) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (instantEnergy < 0) {
-        setFakeStatistics((prevState) => ({
+        setFakeStatistics(({ module0, module1, module2 }) => ({
           module0: {
-            ...prevState.module0,
+            ...module0,
             instantEnergy: 0,
             instantEnergyPercentage: 0,
             dailyEnergy: 0,
             dailyEnergyPercentage: 0,
           },
           module1: {
-            ...prevState.module1,
+            ...module1,
             instantEnergy: 0,
             instantEnergyPercentage: 0,
           },
           module2: {
-            ...prevState.module2,
+            ...module2,
             instantEnergy: 0,
             instantEnergyPercentage: 0,
           },
         }));
       }
 
-      const generateRandomNumber = ({
-        min,
-        max,
-      }: {
-        min: number;
-        max: number;
-      }) => {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-      };
+      setFakeStatistics(({ module0, module1, module2 }) => {
+        const newInstantEnergyModuleOne = generateRandomNumber({
+          min: module1.instantEnergy > 100 ? module1.instantEnergy - 20 : 300,
+          max: module1.instantEnergy > 100 ? module1.instantEnergy + 20 : 350,
+        });
 
-      const newInstantEnergy = generateRandomNumber({
-        min: instantEnergy > 100 ? instantEnergy - 20 : 300,
-        max: instantEnergy > 100 ? instantEnergy + 20 : 350,
+        const newInstantEnergyPercentageModuleOne = Number(
+          (
+            Math.abs(
+              (newInstantEnergyModuleOne / module1.instantEnergy) * 100
+            ) - 100
+          ).toFixed(2)
+        );
+
+        const newInstantEnergyModuleTwo = generateRandomNumber({
+          min: module2.instantEnergy > 100 ? module2.instantEnergy - 20 : 300,
+          max: module2.instantEnergy > 100 ? module2.instantEnergy + 20 : 350,
+        });
+
+        const newInstantEnergyPercentageModuleTwo = Number(
+          (
+            Math.abs(
+              (newInstantEnergyModuleTwo / module2.instantEnergy) * 100
+            ) - 100
+          ).toFixed(2)
+        );
+
+        return {
+          module0: {
+            ...module0,
+            instantEnergy: (module1.instantEnergy + module2.instantEnergy) / 2,
+            instantEnergyPercentage:
+              (module1.instantEnergyPercentage +
+                module2.instantEnergyPercentage) /
+              2,
+          },
+          module1: {
+            ...module1,
+            instantEnergy: newInstantEnergyModuleOne,
+            instantEnergyPercentage: newInstantEnergyPercentageModuleOne,
+          },
+          module2: {
+            ...module2,
+            instantEnergy: newInstantEnergyModuleOne,
+            instantEnergyPercentage: newInstantEnergyPercentageModuleTwo,
+          },
+        };
       });
-
-      const newInstantEnergyPercentage = Number(
-        (Math.abs((newInstantEnergy / instantEnergy) * 100) - 100).toFixed(2)
-      );
-
-      setFakeStatistics((prevState) => ({
-        module0: {
-          ...prevState.module0,
-          instantEnergy:
-            (fakeStatistics.module1.instantEnergy +
-              fakeStatistics.module2.instantEnergy) /
-            2,
-          instantEnergyPercentage:
-            (fakeStatistics.module1.instantEnergyPercentage +
-              fakeStatistics.module2.instantEnergyPercentage) /
-            2,
-        },
-        module1: {
-          ...prevState.module1,
-          instantEnergy: newInstantEnergy,
-          instantEnergyPercentage: newInstantEnergyPercentage,
-        },
-        module2: {
-          ...prevState.module2,
-          instantEnergy: newInstantEnergy,
-          instantEnergyPercentage: newInstantEnergyPercentage,
-        },
-      }));
     }, 2000);
     return () => clearInterval(interval);
   }, [instantEnergy]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const generateRandomNumber = ({
-        min,
-        max,
-      }: {
-        min: number;
-        max: number;
-      }) => {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-      };
-
       const newDailyEnergy = generateRandomNumber({
         min: dailyEnergy > 100 ? dailyEnergy - 10 : 300,
         max: dailyEnergy > 100 ? dailyEnergy + 10 : 350,
@@ -174,21 +174,21 @@ export default function PageDashboard() {
         const newBatteryModuleTwo =
           fakeStatistics.module2.battery + upOrDownBatteryModuleTwo;
 
-        setFakeStatistics((prevState) => ({
-          ...prevState,
+        setFakeStatistics(({ module0, module1, module2 }) => ({
+          module0,
           module1: {
-            ...prevState.module1,
+            ...module1,
             battery: newBatteryModuleOne,
           },
           module2: {
-            ...prevState.module2,
+            ...module2,
             battery: newBatteryModuleTwo,
           },
         }));
       }
     }, 5000);
     return () => clearInterval(interval);
-  }, [module, dailyEnergy]);
+  }, [module, dailyEnergy, fakeStatistics]);
 
   useEffect(() => {
     if (fakeStatistics.module1.battery < 0) {
