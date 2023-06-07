@@ -215,13 +215,14 @@ export default function PageDashboard() {
             </AlertDescription>
           </Box>
         </Alert>
-        <Box display="flex" flexDirection="row" marginTop={2}>
+        <Box display="flex" flexDirection="row" flexWrap="wrap" marginTop={2}>
           {Object.entries(fakeStatistics).map(([m, stats]) => (
             <Card
               key={m}
               onClick={() => setModule(m)}
               margin={1}
               display="flex"
+              minWidth={220}
               flexDirection="row"
               alignItems="center"
               border={m === module ? '1px solid lightgrey' : 'none'}
@@ -232,7 +233,7 @@ export default function PageDashboard() {
               </CardHeader>
               <CardBody>
                 <Box>
-                  <Text>{m === 'all' ? 'Tous' : m}</Text>
+                  <Text textAlign="center">{m === 'all' ? 'Tous' : m}</Text>
 
                   <Box
                     display="flex"
