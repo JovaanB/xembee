@@ -51,129 +51,91 @@ export default function PageDashboard() {
   } = selectedModule;
 
   const generateFakeInstantData = useCallback(() => {
-    setFakeStatistics(({ all, M01x00210, M02x00210 }) => {
-      const newInstantEnergyModuleOne = generateRandomNumber({
-        min: M01x00210.instantEnergy < 0 ? M01x00210.instantEnergy - 20 : 200,
-        max: M01x00210.instantEnergy < 400 ? M01x00210.instantEnergy + 20 : 400,
+    setFakeStatistics((prevState) => {
+      const newState = { ...prevState };
+
+      Object.entries(prevState).map(([key, value]) => {
+        let globalInstantEnergy = 0;
+        let globalInstantEnergyPourcentage = 0;
+
+        const newInstantEnergy = generateRandomNumber({
+          min: value.instantEnergy < 0 ? value.instantEnergy - 20 : 200,
+          max: value.instantEnergy < 400 ? value.instantEnergy + 20 : 400,
+        });
+
+        const newInstantEnergyPercentage = Number(
+          (
+            Math.round((newInstantEnergy / value.instantEnergy) * 100) - 100
+          ).toFixed(2)
+        );
+
+        globalInstantEnergy += newInstantEnergy;
+        globalInstantEnergyPourcentage += newInstantEnergyPercentage;
+
+        newState[key] = {
+          ...value,
+          instantEnergy: key === 'all' ? globalInstantEnergy : newInstantEnergy,
+          instantEnergyPercentage:
+            key === 'all'
+              ? globalInstantEnergyPourcentage
+              : newInstantEnergyPercentage,
+        };
       });
-
-      const newInstantEnergyPercentageModuleOne = Number(
-        (
-          Math.round(
-            (newInstantEnergyModuleOne / M01x00210.instantEnergy) * 100
-          ) - 100
-        ).toFixed(2)
-      );
-
-      const newInstantEnergyModuleTwo = generateRandomNumber({
-        min: M02x00210.instantEnergy < 0 ? M02x00210.instantEnergy - 20 : 200,
-        max: M02x00210.instantEnergy < 400 ? M02x00210.instantEnergy + 20 : 400,
-      });
-
-      const newInstantEnergyPercentageModuleTwo = Number(
-        (
-          Math.round(
-            (newInstantEnergyModuleTwo / M02x00210.instantEnergy) * 100
-          ) - 100
-        ).toFixed(2)
-      );
 
       return {
-        all: {
-          ...all,
-          instantEnergy:
-            (newInstantEnergyModuleOne + newInstantEnergyModuleTwo) / 2,
-          instantEnergyPercentage:
-            (newInstantEnergyPercentageModuleOne +
-              newInstantEnergyPercentageModuleTwo) /
-            2,
-        },
-        M01x00210: {
-          ...M01x00210,
-          instantEnergy: newInstantEnergyModuleOne,
-          instantEnergyPercentage: newInstantEnergyPercentageModuleOne,
-        },
-        M02x00210: {
-          ...M02x00210,
-          instantEnergy: newInstantEnergyModuleOne,
-          instantEnergyPercentage: newInstantEnergyPercentageModuleTwo,
-        },
+        ...newState,
       };
     });
   }, []);
 
   const generateFakeDailyAndBatteryData = useCallback(() => {
-    setFakeStatistics(({ all, M01x00210, M02x00210 }) => {
-      const newDailyEnergyModuleOne = generateRandomNumber({
-        min: M01x00210.dailyEnergy > 100 ? M01x00210.dailyEnergy - 100 : 200,
-        max: M01x00210.dailyEnergy < 400 ? M01x00210.dailyEnergy + 100 : 400,
+    setFakeStatistics((prevState) => {
+      const newState = { ...prevState };
+      Object.entries(prevState).map(([key, value]) => {
+        let globalDailyEnergy = 0;
+        let globalDailyEnergyPourcentage = 0;
+        let globalBattery = 0;
+
+        const newDailyEnergy = generateRandomNumber({
+          min: value.dailyEnergy > 100 ? value.dailyEnergy - 100 : 200,
+          max: value.dailyEnergy < 400 ? value.dailyEnergy + 100 : 400,
+        });
+
+        const newDailyEnergyPercentage = Number(
+          (
+            Math.round((newDailyEnergy / value.dailyEnergy) * 100) - 100
+          ).toFixed(2)
+        );
+
+        const upOrDownBattery = generateRandomBoolean() ? 1 : -1;
+
+        const newBattery =
+          value.battery < 0
+            ? 0
+            : value.battery > 100
+            ? 100
+            : value.battery + upOrDownBattery;
+
+        globalDailyEnergy += newDailyEnergy;
+        globalDailyEnergyPourcentage += newDailyEnergyPercentage;
+        globalBattery += newBattery;
+
+        newState[key] = {
+          ...value,
+          dailyEnergy: key === 'all' ? globalDailyEnergy : newDailyEnergy,
+          dailyEnergyPercentage:
+            key === 'all'
+              ? globalDailyEnergyPourcentage
+              : newDailyEnergyPercentage,
+          battery: newBattery,
+        };
       });
-
-      const newDailyEnergyPercentageModuleOne = Number(
-        (
-          Math.round((newDailyEnergyModuleOne / M01x00210.dailyEnergy) * 100) -
-          100
-        ).toFixed(2)
-      );
-
-      const newDailyEnergyModuleTwo = generateRandomNumber({
-        min: M02x00210.dailyEnergy > 100 ? M02x00210.dailyEnergy - 100 : 200,
-        max: M02x00210.dailyEnergy < 400 ? M02x00210.dailyEnergy + 100 : 400,
-      });
-
-      const newDailyEnergyPercentageModuleTwo = Number(
-        (
-          Math.round((newDailyEnergyModuleTwo / M02x00210.dailyEnergy) * 100) -
-          100
-        ).toFixed(2)
-      );
-
-      const upOrDownBatteryModuleOne = generateRandomBoolean() ? 1 : -1;
-      const upOrDownBatteryModuleTwo = generateRandomBoolean() ? 1 : -1;
-
-      const newBatteryModuleOne =
-        fakeStatistics.M01x00210.battery < 0
-          ? 0
-          : fakeStatistics.M01x00210.battery > 100
-          ? 100
-          : fakeStatistics.M01x00210.battery + upOrDownBatteryModuleOne;
-
-      const newBatteryModuleTwo =
-        fakeStatistics.M02x00210.battery < 0
-          ? 0
-          : fakeStatistics.M02x00210.battery > 100
-          ? 100
-          : fakeStatistics.M02x00210.battery + upOrDownBatteryModuleTwo;
 
       return {
-        all: {
-          ...all,
-          dailyEnergy: (newDailyEnergyModuleOne + newDailyEnergyModuleTwo) / 2,
-          dailyEnergyPercentage:
-            (newDailyEnergyPercentageModuleOne +
-              newDailyEnergyPercentageModuleTwo) /
-            2,
-          battery: (newBatteryModuleOne + newBatteryModuleTwo) / 2,
-        },
-        M01x00210: {
-          ...M01x00210,
-          dailyEnergy: newDailyEnergyModuleOne,
-          dailyEnergyPercentage: newDailyEnergyPercentageModuleOne,
-          battery: newBatteryModuleOne,
-        },
-        M02x00210: {
-          ...M02x00210,
-          dailyEnergy: newDailyEnergyModuleTwo,
-          dailyEnergyPercentage: newDailyEnergyPercentageModuleTwo,
-          battery: newBatteryModuleTwo,
-        },
+        ...newState,
       };
     });
-  }, [
-    dailyEnergy,
-    fakeStatistics.M01x00210.battery,
-    fakeStatistics.M02x00210.battery,
-  ]);
+  }, [dailyEnergy]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -191,11 +153,7 @@ export default function PageDashboard() {
       generateFakeDailyAndBatteryData();
     }, FIVE_SECONDS);
     return () => clearInterval(interval);
-  }, [
-    dailyEnergy,
-    fakeStatistics.M01x00210.battery,
-    fakeStatistics.M02x00210.battery,
-  ]);
+  }, [dailyEnergy]);
 
   return (
     <Page>
@@ -215,7 +173,14 @@ export default function PageDashboard() {
             </AlertDescription>
           </Box>
         </Alert>
-        <Box display="flex" flexDirection="row" flexWrap="wrap" marginTop={2}>
+        <Box
+          display="flex"
+          flexDirection="row"
+          flexWrap="wrap"
+          justifyContent="space-between"
+          alignItems="baseline"
+          marginTop={2}
+        >
           {Object.entries(fakeStatistics).map(([m, stats]) => (
             <Card
               key={m}
