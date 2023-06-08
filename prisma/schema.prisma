@@ -40,3 +40,15 @@ model VerificationToken {
 
   @@unique([token, userId])
 }
+
+model Intervention {
+  id          Int     @id @default(autoincrement())
+  name        String
+  comment     String?
+  module      String @default("M01x00210")
+  status      String? @default("pending")
+  deleted     Boolean @default(false)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

@@ -7,6 +7,7 @@ import dashboard from './dashboard.json';
 import demoMode from './demoMode.json';
 import interventions from './interventions.json';
 import layout from './layout.json';
+import users from './users.json';
 
 export default {
   account,
@@ -18,4 +19,5 @@ export default {
   demoMode,
   layout,
   interventions,
+  users,
 } as const;

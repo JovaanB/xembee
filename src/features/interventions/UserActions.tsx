@@ -10,7 +10,7 @@ import {
   Portal,
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { LuCheckCircle, LuEdit, LuTrash2, LuXCircle } from 'react-icons/lu';
+import { LuEdit, LuTrash2 } from 'react-icons/lu';
 import { Link } from 'react-router-dom';
 
 import { ActionsButton } from '@/components/ActionsButton';
@@ -77,9 +77,6 @@ export const UserActions = ({ user, ...rest }: UserActionProps) => {
     },
   });
 
-  const activateUser = () => userUpdate.mutate({ ...user, status: 'pending' });
-  const deactivateUser = () =>
-    userUpdate.mutate({ ...user, status: 'completed' });
   const isActionsLoading = userUpdate.isLoading;
 
   const userRemove = useUserRemove({

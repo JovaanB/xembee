@@ -5,7 +5,6 @@ import {
   AlertDescription,
   AlertIcon,
   AlertTitle,
-  Avatar,
   Box,
   Button,
   Center,
@@ -53,8 +52,6 @@ export default function PageInterventions() {
     page: page - 1,
     size: pageSize,
   });
-
-  console.log({ users });
 
   return (
     <Page containerSize="xl" nav={<AdminNav />}>

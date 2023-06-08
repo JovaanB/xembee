@@ -1,11 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import {
-  createUser,
-  getInterventionList,
-  updateUserById,
-} from '@/app/api/jhipster-mocks/admin/interventions/service';
+import { getInterventionList } from '@/app/api/jhipster-mocks/admin/interventions/service';
 import {
   apiMethod,
   badRequestResponse,
@@ -51,29 +47,5 @@ export const POST = apiMethod({
 
     // const user = await createUser({ activated: true, ...bodyParsed.data });
     // return NextResponse.json(user);
-  },
-});
-export const PUT = apiMethod({
-  admin: true,
-  handler: async ({ req }) => {
-    const bodyParsed = z
-      .object({
-        id: z.number(),
-        login: z.string().min(2),
-        email: z.string().email(),
-        firstName: z.string().nullable(),
-        lastName: z.string().nullable(),
-        langKey: z.string(),
-        authorities: z.array(z.string()),
-        activated: z.boolean().optional(),
-      })
-      .safeParse(await req.json());
-
-    if (!bodyParsed.success) {
-      return badRequestResponse();
-    }
-
-    const user = await updateUserById(bodyParsed.data.id, bodyParsed.data);
-    return NextResponse.json(user);
   },
 });

@@ -3,36 +3,12 @@ import { z } from 'zod';
 
 import {
   createUser,
-  getUserList,
   updateUserById,
 } from '@/app/api/jhipster-mocks/admin/users/service';
 import {
   apiMethod,
   badRequestResponse,
 } from '@/app/api/jhipster-mocks/helpers';
-
-export const GET = apiMethod({
-  admin: true,
-  handler: async ({ searchParams }) => {
-    const options = z
-      .object({
-        page: z.string().optional().default('0').transform(Number),
-        size: z.string().optional().default('10').transform(Number),
-      })
-      .default({ page: '0', size: '10' })
-      .parse({
-        page: searchParams.get('page'),
-        size: searchParams.get('size'),
-      });
-    const { users, total } = await getUserList({
-      skip: options.page * options.size,
-      take: options.size,
-    });
-    const headers = new Headers();
-    headers.set('x-total-count', total.toString());
-    return NextResponse.json(users, { headers });
-  },
-});
 
 export const POST = apiMethod({
   admin: true,

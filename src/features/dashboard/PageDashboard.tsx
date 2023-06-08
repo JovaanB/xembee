@@ -72,7 +72,7 @@ export default function PageDashboard() {
         globalInstantEnergy += newInstantEnergy;
         globalInstantEnergyPourcentage += newInstantEnergyPercentage;
 
-        newState[key] = {
+        (newState as any)[key] = {
           ...value,
           instantEnergy: key === 'all' ? globalInstantEnergy : newInstantEnergy,
           instantEnergyPercentage:
@@ -120,14 +120,14 @@ export default function PageDashboard() {
         globalDailyEnergyPourcentage += newDailyEnergyPercentage;
         globalBattery += newBattery;
 
-        newState[key] = {
+        (newState as any)[key] = {
           ...value,
           dailyEnergy: key === 'all' ? globalDailyEnergy : newDailyEnergy,
           dailyEnergyPercentage:
             key === 'all'
               ? globalDailyEnergyPourcentage
               : newDailyEnergyPercentage,
-          battery: newBattery,
+          battery: key === 'all' ? globalBattery : newBattery,
         };
       });
 

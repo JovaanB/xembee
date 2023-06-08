@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { LuBookOpen, LuUsers } from 'react-icons/lu';
+import { LuUsers } from 'react-icons/lu';
 import { Link, useLocation } from 'react-router-dom';
 
 import { Nav, NavGroup, NavItem } from '@/components/Nav';
