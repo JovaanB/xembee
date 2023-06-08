@@ -9,6 +9,7 @@ import {
   Stack,
   useTheme,
 } from '@chakra-ui/react';
+import { Analytics } from '@vercel/analytics/react';
 import { LuArrowLeft, LuArrowRight } from 'react-icons/lu';
 import useMeasure from 'react-use-measure';
 
@@ -206,6 +207,7 @@ export const Page = ({
 
   return (
     <PageContext.Provider value={value}>
+      <Analytics />
       <Flex direction="column" flex="1" position="relative" {...rest} />
     </PageContext.Provider>
   );
