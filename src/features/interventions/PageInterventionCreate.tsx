@@ -12,12 +12,12 @@ import {
   PageTopBar,
 } from '@/components/Page';
 import { useToastError, useToastSuccess } from '@/components/Toast';
-import { UserForm } from '@/features/users/UserForm';
-import { User } from '@/features/users/schema';
-import { useUserCreate } from '@/features/users/service';
+import { UserForm } from '@/features/interventions/UserForm';
+import { Intervention } from '@/features/interventions/schema';
+import { useUserCreate } from '@/features/interventions/service';
 
-export default function PageUserCreate() {
-  const { t } = useTranslation(['common', 'users']);
+export default function PageInterventionCreate() {
+  const { t } = useTranslation(['common', 'interventions']);
   const navigate = useNavigate();
 
   const toastError = useToastError();
@@ -28,18 +28,18 @@ export default function PageUserCreate() {
       if (error.response) {
         const { title, errorKey } = error.response.data;
         toastError({
-          title: t('users:create.feedbacks.updateError.title'),
+          title: t('interventions:create.feedbacks.updateError.title'),
           description: title,
         });
         switch (errorKey) {
           case 'userexists':
             form.setErrors({
-              login: t('users:data.login.alreadyUsed'),
+              login: t('interventions:data.login.alreadyUsed'),
             });
             break;
           case 'emailexists':
             form.setErrors({
-              email: t('users:data.email.alreadyUsed'),
+              email: t('interventions:data.email.alreadyUsed'),
             });
             break;
         }
@@ -47,17 +47,14 @@ export default function PageUserCreate() {
     },
     onSuccess: () => {
       toastSuccess({
-        title: t('users:create.feedbacks.updateSuccess.title'),
+        title: t('interventions:create.feedbacks.updateSuccess.title'),
       });
-      navigate('/admin/users');
+      navigate('/admin/interventions');
     },
   });
 
   const form = useForm<
-    Pick<
-      User,
-      'login' | 'email' | 'firstName' | 'lastName' | 'langKey' | 'authorities'
-    >
+    Pick<Intervention, 'id' | 'status' | 'name' | 'comment' | 'deleted'>
   >({
     onValidSubmit: (values) => {
       const newUser = {
@@ -71,15 +68,15 @@ export default function PageUserCreate() {
     <Page containerSize="md" isFocusMode>
       <Formiz connect={form}>
         <form noValidate onSubmit={form.submit}>
-          <PageTopBar showBack onBack={() => navigate('/admin/users')}>
-            <Heading size="md">{t('users:create.title')}</Heading>
+          <PageTopBar showBack onBack={() => navigate('/admin/interventions')}>
+            <Heading size="md">{t('interventions:create.title')}</Heading>
           </PageTopBar>
           <PageContent>
             <UserForm />
           </PageContent>
           <PageBottomBar>
             <ButtonGroup justifyContent="space-between">
-              <Button onClick={() => navigate('/admin/users')}>
+              <Button onClick={() => navigate('/admin/interventions')}>
                 {t('common:actions.cancel')}
               </Button>
               <Button
@@ -87,7 +84,7 @@ export default function PageUserCreate() {
                 variant="@primary"
                 isLoading={createUser.isLoading}
               >
-                {t('users:create.action.save')}
+                {t('interventions:create.action.save')}
               </Button>
             </ButtonGroup>
           </PageBottomBar>

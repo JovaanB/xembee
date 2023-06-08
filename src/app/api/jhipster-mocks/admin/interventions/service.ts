@@ -34,8 +34,25 @@ export const prepareUserForDb = <
   };
 };
 
-export const getUserById = async (id: number) => {
-  const user = await db.user.findUnique({ where: { id } });
+export const getInterventionList = async (
+  options: { skip?: number; take?: number } = {}
+) => {
+  const [interventions, total] = await Promise.all([
+    db.interventions.findMany({
+      skip: options.skip ?? 0,
+      take: options.take ?? 2,
+    }),
+    db.interventions.count(),
+  ]);
+
+  return {
+    users: interventions.map(formatUserFromDb),
+    total,
+  } as const;
+};
+
+export const getInterventionById = async (id: number) => {
+  const user = await db.interventions.findUnique({ where: { id } });
   return formatUserFromDb(user);
 };
 

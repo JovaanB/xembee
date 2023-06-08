@@ -1,8 +1,8 @@
 {
   "list": {
-    "title": "Users Management",
+    "title": "Interventions Management",
     "actions": {
-      "createUser": "Create User",
+      "createUser": "Create intervention",
       "refetch": "Retry"
     }
   },
@@ -24,16 +24,16 @@
       "description": "Fail to deactivate \"{{login}}\" user"
     },
     "deleteUserSuccess": {
-      "title": "User deleted",
-      "description": "User \"{{login}}\" deleted with success"
+      "title": "Intervention deleted",
+      "description": "Intervention deleted with success"
     },
     "deleteUserError": {
       "title": "Deletion Failed",
-      "description": "Fail to remove \"{{login}}\" user"
+      "description": "Fail to remove intervention"
     },
     "loadingUserError": {
       "title": "It seems that we have a problem ",
-      "description": "Failed to load users"
+      "description": "Failed to load interventions"
     }
   },
   "data": {
@@ -56,6 +56,15 @@
     "id": {
       "label": "ID"
     },
+    "name": {
+      "label": "Name"
+    },
+    "comment": {
+      "label": "Comment"
+    },
+    "module": {
+      "label": "Module"
+    },
     "authorities": {
       "label": "Authorities",
       "required": "Authorities are required"
@@ -68,8 +77,8 @@
     },
     "status": {
       "label": "Status",
-      "activated": "Activated",
-      "deactivated": "Not Activated"
+      "pending": "Pending",
+      "validated": "Validated"
     },
     "firstname": {
       "label": "First Name"

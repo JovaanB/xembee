@@ -17,22 +17,22 @@
       "description": "Échec de la désactivation de l'utilisateur \"{{login}}\""
     },
     "deleteUserSuccess": {
-      "title": "Utilisateur supprimé",
-      "description": "Utilisateur \"{{login}}\" supprimé avec succès"
+      "title": "Intervention supprimé",
+      "description": "Intervention supprimée avec succès"
     },
     "deleteUserError": {
       "title": "Échec de la suppression",
-      "description": "Échec de la suppression de l'utilisateur \"{{login}}\""
+      "description": "Échec de la suppression de l'intervention"
     },
     "loadingUserError": {
       "title": "Il semblerait qu'il y ait un problème",
-      "description": "Échec du chargement des utilisateurs"
+      "description": "Échec du chargement des interventions"
     }
   },
   "list": {
-    "title": "Gestion des utilisateurs",
+    "title": "Gestion des interventions",
     "actions": {
-      "createUser": "Créer un utilisateur",
+      "createUser": "Créer une intervention",
       "refetch": "Réessayer"
     }
   },
@@ -56,6 +56,15 @@
     "id": {
       "label": "ID"
     },
+    "name": {
+      "label": "Nom"
+    },
+    "comment": {
+      "label": "Commentaire"
+    },
+    "module": {
+      "label": "Module"
+    },
     "authorities": {
       "label": "Autorisations",
       "required": "Les autorisations sont requises"
@@ -68,8 +77,8 @@
     },
     "status": {
       "label": "Statut",
-      "activated": "Activé",
-      "deactivated": "Non activé"
+      "pending": "En cours",
+      "validated": "Fini"
     },
     "firstname": {
       "label": "Prénom"

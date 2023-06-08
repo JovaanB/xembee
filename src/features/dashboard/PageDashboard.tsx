@@ -20,7 +20,7 @@ import {
   theme,
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { LuBatteryFull } from 'react-icons/lu';
+import { LuBatteryFull, LuBatteryWarning } from 'react-icons/lu';
 
 import { Wind } from '@/components/Logo/Wind';
 import { Page, PageContent } from '@/components/Page';
@@ -240,25 +240,34 @@ export default function PageDashboard() {
                     justifyContent="center"
                     alignItems="center"
                   >
-                    <LuBatteryFull
-                      color={
-                        stats.battery > 60
-                          ? theme.colors.green[600]
-                          : theme.colors.red[400]
-                      }
-                      size="20px"
-                    />
-                    <Text
-                      color={
-                        stats.battery > 60
-                          ? theme.colors.green[600]
-                          : theme.colors.red[400]
-                      }
-                      fontWeight={800}
-                      ml={1}
-                    >
-                      {stats.battery}%
-                    </Text>
+                    {m === 'M01x00210' ? (
+                      <LuBatteryWarning
+                        color={theme.colors.red[400]}
+                        size="20px"
+                      />
+                    ) : (
+                      <>
+                        <LuBatteryFull
+                          color={
+                            stats.battery > 60
+                              ? theme.colors.green[600]
+                              : theme.colors.red[400]
+                          }
+                          size="20px"
+                        />
+                        <Text
+                          color={
+                            stats.battery > 60
+                              ? theme.colors.green[600]
+                              : theme.colors.red[400]
+                          }
+                          fontWeight={800}
+                          ml={1}
+                        >
+                          {stats.battery}%
+                        </Text>
+                      </>
+                    )}
                   </Box>
                 </Box>
               </CardBody>

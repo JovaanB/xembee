@@ -15,19 +15,11 @@ export const AdminNav = () => {
       <NavGroup title={t('admin:nav.administration')}>
         <NavItem
           as={Link}
-          to="/admin/users"
-          isActive={isActive('/admin/users')}
+          to="/admin/interventions"
+          isActive={isActive('/admin/interventions')}
           icon={LuUsers}
         >
-          {t('admin:nav.users')}
-        </NavItem>
-        <NavItem
-          as={Link}
-          to="/admin/api"
-          isActive={isActive('/admin/api')}
-          icon={LuBookOpen}
-        >
-          {t('admin:nav.apiDocumentation')}
+          {t('admin:nav.interventions')}
         </NavItem>
       </NavGroup>
     </Nav>

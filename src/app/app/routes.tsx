@@ -20,26 +20,22 @@ import PageDashboard from '@/features/dashboard/PageDashboard';
 import { Layout } from '@/layout/Layout';
 import { Loader } from '@/layout/Loader';
 
-const PageApiDocumentation = dynamic(
-  () => import('@/features/api-documentation/PageApiDocumentation'),
+const PageInterventions = dynamic(
+  () => import('@/features/interventions/PagesInterventions'),
   {
     loading: () => <Loader />,
   }
 );
 
-const PageUsers = dynamic(() => import('@/features/users/PageUsers'), {
-  loading: () => <Loader />,
-});
-
-const PageUserCreate = dynamic(
-  () => import('@/features/users/PageUserCreate'),
+const PageInterventionCreate = dynamic(
+  () => import('@/features/interventions/PageInterventionCreate'),
   {
     loading: () => <Loader />,
   }
 );
 
-const PageUserUpdate = dynamic(
-  () => import('@/features/users/PageUserUpdate'),
+const PageInterventionUpdate = dynamic(
+  () => import('@/features/interventions/PageInterventionUpdate'),
   {
     loading: () => <Loader />,
   }
@@ -147,19 +143,15 @@ export const routes = [
             children: [
               {
                 path: '',
-                element: <Navigate to="users" replace />,
+                element: <Navigate to="interventions" replace />,
               },
               {
-                path: 'users',
+                path: 'interventions',
                 children: [
-                  { path: '', element: <PageUsers /> },
-                  { path: 'create', element: <PageUserCreate /> },
-                  { path: ':login', element: <PageUserUpdate /> },
+                  { path: '', element: <PageInterventions /> },
+                  { path: 'create', element: <PageInterventionCreate /> },
+                  { path: ':id', element: <PageInterventionUpdate /> },
                 ],
-              },
-              {
-                path: 'api',
-                children: [{ path: '', element: <PageApiDocumentation /> }],
               },
             ],
           },
