@@ -308,7 +308,7 @@ export default function PageDashboard() {
               shadow={m === module ? 'lg' : 'none'}
             >
               <CardHeader>
-                {(fakeStatistics[m] as any).needMaintenance ? (
+                {(fakeStatistics as any)[m].needMaintenance ? (
                   <RiErrorWarningFill
                     size="40px"
                     color={theme.colors.red[400]}
