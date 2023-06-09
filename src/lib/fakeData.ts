@@ -73,4 +73,4 @@ export const MAX_NOISE_POLLUTION = 100;
 export const VARIATION_NOISE_POLLUTION = 10;
 
 export const MAX_BATTERY = 100;
-export const BATTERY_THRESHOLD = 60;
+export const BATTERY_THRESHOLD = 40;

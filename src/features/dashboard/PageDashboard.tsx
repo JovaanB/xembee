@@ -324,10 +324,16 @@ export default function PageDashboard() {
 
                   <Box
                     display="flex"
+                    flexDirection="row"
                     justifyContent="center"
                     alignItems="center"
                   >
-                    <Box>
+                    <Box
+                      display="flex"
+                      flexDirection="row"
+                      alignItems="center"
+                      justifyContent="center"
+                    >
                       <LuBatteryFull
                         color={
                           stats.battery > BATTERY_THRESHOLD
