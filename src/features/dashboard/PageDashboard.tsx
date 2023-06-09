@@ -1,84 +1,141 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
   Box,
+  Button,
   Card,
   CardBody,
   CardHeader,
   Heading,
-  Stat,
-  StatArrow,
   StatGroup,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
   Text,
   theme,
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { LuBatteryFull, LuBatteryWarning } from 'react-icons/lu';
+import { LuBatteryFull } from 'react-icons/lu';
+import { RiErrorWarningFill } from 'react-icons/ri';
+import { useNavigate } from 'react-router-dom';
 
 import { Wind } from '@/components/Logo/Wind';
+import { OneStat } from '@/components/OneStat';
 import { Page, PageContent } from '@/components/Page';
-import { initialFakeStatisticsData } from '@/lib/fakeData';
 import {
+  BATTERY_THRESHOLD,
+  FIVE_SECONDS,
+  MAX_BATTERY,
+  MAX_DAILY_ENERGY,
+  MAX_INSTANT_ENERGY,
+  MAX_NOISE_POLLUTION,
+  MIN_DAILY_ENERGY,
+  MIN_INSTANT_ENERGY,
+  MIN_NOISE_POLLUTION,
+  ONE_SECOND,
+  VARIATION_DAILY_ENERGY,
+  VARIATION_INSTANT_ENERGY,
+  VARIATION_NOISE_POLLUTION,
+  ZERO,
+  initialFakeStatisticsData,
+} from '@/lib/fakeData';
+import {
+  calculAverage,
   generateRandomBoolean,
   generateRandomNumber,
 } from '@/lib/helpingFunctions';
 
-const ONE_SECOND = 1000;
-const FIVE_SECONDS = 5000;
+import { useAccount } from '../account/service';
 
 export default function PageDashboard() {
   const { t } = useTranslation(['dashboard']);
+  const account = useAccount();
+  const navigate = useNavigate();
 
-  const [module, setModule] = useState('all');
+  const [module, setModule] = useState('');
   const [fakeStatistics, setFakeStatistics] = useState(
     initialFakeStatisticsData
   );
+  const [globalStatistics, setGlobalStatistics] = useState({
+    globalInstantEnergy: ZERO,
+    globalInstantEnergyPercentage: ZERO,
+    globalDailyEnergy: ZERO,
+    globalDailyEnergyPercentage: ZERO,
+    globalNoisePollution: ZERO,
+  });
+
+  const countModulesWithoutNeedMaintenance = Object.values(
+    fakeStatistics
+  ).filter((value) => !value.needMaintenance).length;
 
   const selectedModule = fakeStatistics[module as keyof typeof fakeStatistics];
 
   const {
-    instantEnergy,
-    dailyEnergy,
-    instantEnergyPercentage,
-    dailyEnergyPercentage,
-  } = selectedModule;
+    instantEnergy = ZERO,
+    dailyEnergy = ZERO,
+    instantEnergyPercentage = ZERO,
+    dailyEnergyPercentage = ZERO,
+    noisePollution = ZERO,
+    needMaintenance = false,
+  } = selectedModule || {};
 
-  const generateFakeInstantData = useCallback(() => {
+  const {
+    globalInstantEnergy,
+    globalInstantEnergyPercentage,
+    globalDailyEnergy,
+    globalDailyEnergyPercentage,
+    globalNoisePollution,
+  } = globalStatistics;
+
+  const generateFakeInstantAndNoisePollutionData = useCallback(() => {
+    let globalInstantEnergy = ZERO;
+    let globalInstantEnergyPourcentage = ZERO;
+    let globalNoisePollution = ZERO;
+
     setFakeStatistics((prevState) => {
       const newState = { ...prevState };
 
-      Object.entries(prevState).map(([key, value]) => {
-        let globalInstantEnergy = 0;
-        let globalInstantEnergyPourcentage = 0;
+      Object.entries(prevState).forEach(([key, value]) => {
+        const newInstantEnergy = value.needMaintenance
+          ? ZERO
+          : generateRandomNumber({
+              min: value.instantEnergy < ZERO ? ZERO : MIN_INSTANT_ENERGY,
+              max:
+                value.instantEnergy < MAX_INSTANT_ENERGY
+                  ? value.instantEnergy + VARIATION_INSTANT_ENERGY
+                  : MAX_INSTANT_ENERGY,
+            });
 
-        const newInstantEnergy = generateRandomNumber({
-          min: value.instantEnergy < 0 ? value.instantEnergy - 20 : 200,
-          max: value.instantEnergy < 400 ? value.instantEnergy + 20 : 400,
-        });
+        const newInstantEnergyPercentage = value.needMaintenance
+          ? ZERO
+          : Number(
+              (
+                Math.round(
+                  (newInstantEnergy / value.instantEnergy) *
+                    VARIATION_DAILY_ENERGY
+                ) - VARIATION_DAILY_ENERGY
+              ).toFixed(2)
+            );
 
-        const newInstantEnergyPercentage = Number(
-          (
-            Math.round((newInstantEnergy / value.instantEnergy) * 100) - 100
-          ).toFixed(2)
-        );
+        const newNoisePollution = value.needMaintenance
+          ? ZERO
+          : generateRandomNumber({
+              min:
+                value.noisePollution < VARIATION_NOISE_POLLUTION
+                  ? MIN_NOISE_POLLUTION
+                  : value.noisePollution - VARIATION_NOISE_POLLUTION,
+              max:
+                value.noisePollution > 90
+                  ? MAX_NOISE_POLLUTION
+                  : value.noisePollution + VARIATION_NOISE_POLLUTION,
+            });
 
         globalInstantEnergy += newInstantEnergy;
         globalInstantEnergyPourcentage += newInstantEnergyPercentage;
+        globalNoisePollution += newNoisePollution;
 
         (newState as any)[key] = {
           ...value,
-          instantEnergy: key === 'all' ? globalInstantEnergy : newInstantEnergy,
-          instantEnergyPercentage:
-            key === 'all'
-              ? globalInstantEnergyPourcentage
-              : newInstantEnergyPercentage,
+          instantEnergy: newInstantEnergy,
+          instantEnergyPercentage: newInstantEnergyPercentage,
+          noisePollution: newNoisePollution,
         };
       });
 
@@ -86,48 +143,72 @@ export default function PageDashboard() {
         ...newState,
       };
     });
+
+    setGlobalStatistics((prevState) => ({
+      ...prevState,
+      globalInstantEnergy: calculAverage(
+        globalInstantEnergy,
+        countModulesWithoutNeedMaintenance
+      ),
+      globalInstantEnergyPercentage: calculAverage(
+        globalInstantEnergyPourcentage,
+        countModulesWithoutNeedMaintenance
+      ),
+      globalNoisePollution: calculAverage(
+        globalNoisePollution,
+        countModulesWithoutNeedMaintenance
+      ),
+    }));
   }, []);
 
   const generateFakeDailyAndBatteryData = useCallback(() => {
+    let globalDailyEnergy = ZERO;
+    let globalDailyEnergyPercentage = ZERO;
+    let globalBattery = ZERO;
+
     setFakeStatistics((prevState) => {
       const newState = { ...prevState };
+
       Object.entries(prevState).map(([key, value]) => {
-        let globalDailyEnergy = 0;
-        let globalDailyEnergyPourcentage = 0;
-        let globalBattery = 0;
+        const newDailyEnergy = value.needMaintenance
+          ? ZERO
+          : generateRandomNumber({
+              min:
+                value.dailyEnergy > MIN_DAILY_ENERGY
+                  ? value.dailyEnergy - VARIATION_DAILY_ENERGY
+                  : MIN_DAILY_ENERGY,
+              max:
+                value.dailyEnergy < MAX_DAILY_ENERGY
+                  ? value.dailyEnergy + VARIATION_DAILY_ENERGY
+                  : MAX_DAILY_ENERGY,
+            });
 
-        const newDailyEnergy = generateRandomNumber({
-          min: value.dailyEnergy > 100 ? value.dailyEnergy - 100 : 200,
-          max: value.dailyEnergy < 400 ? value.dailyEnergy + 100 : 400,
-        });
-
-        const newDailyEnergyPercentage = Number(
-          (
-            Math.round((newDailyEnergy / value.dailyEnergy) * 100) - 100
-          ).toFixed(2)
-        );
+        const newDailyEnergyPercentage = value.needMaintenance
+          ? ZERO
+          : Number(
+              (
+                Math.round((newDailyEnergy / value.dailyEnergy) * 100) - 100
+              ).toFixed(2)
+            );
 
         const upOrDownBattery = generateRandomBoolean() ? 1 : -1;
 
         const newBattery =
-          value.battery < 0
-            ? 0
-            : value.battery > 100
-            ? 100
+          value.battery < 1 || value.needMaintenance
+            ? ZERO
+            : value.battery > MAX_BATTERY
+            ? MAX_BATTERY
             : value.battery + upOrDownBattery;
 
         globalDailyEnergy += newDailyEnergy;
-        globalDailyEnergyPourcentage += newDailyEnergyPercentage;
+        globalDailyEnergyPercentage += newDailyEnergyPercentage;
         globalBattery += newBattery;
 
         (newState as any)[key] = {
           ...value,
-          dailyEnergy: key === 'all' ? globalDailyEnergy : newDailyEnergy,
-          dailyEnergyPercentage:
-            key === 'all'
-              ? globalDailyEnergyPourcentage
-              : newDailyEnergyPercentage,
-          battery: key === 'all' ? globalBattery : newBattery,
+          dailyEnergy: newDailyEnergy,
+          dailyEnergyPercentage: newDailyEnergyPercentage,
+          battery: newBattery,
         };
       });
 
@@ -135,25 +216,41 @@ export default function PageDashboard() {
         ...newState,
       };
     });
+
+    setGlobalStatistics((prevState) => ({
+      ...prevState,
+      globalDailyEnergy: calculAverage(
+        globalDailyEnergy,
+        countModulesWithoutNeedMaintenance
+      ),
+      globalDailyEnergyPercentage: calculAverage(
+        globalDailyEnergyPercentage,
+        countModulesWithoutNeedMaintenance
+      ),
+      globalBattery: calculAverage(
+        globalBattery,
+        countModulesWithoutNeedMaintenance
+      ),
+    }));
   }, [dailyEnergy]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      generateFakeInstantData();
+      generateFakeInstantAndNoisePollutionData();
     }, ONE_SECOND);
     return () => clearInterval(interval);
   });
 
   useEffect(() => {
-    generateFakeInstantData();
-  }, [module]);
+    generateFakeInstantAndNoisePollutionData();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
       generateFakeDailyAndBatteryData();
     }, FIVE_SECONDS);
     return () => clearInterval(interval);
-  }, [dailyEnergy]);
+  }, []);
 
   return (
     <Page>
@@ -161,30 +258,47 @@ export default function PageDashboard() {
         <Heading size="md" mb="4">
           {t('dashboard:title')}
         </Heading>
-        <Alert status="success" colorScheme="brand" borderRadius="md">
-          <AlertIcon />
-          <Box flex="1">
-            <AlertTitle fontSize="lg">
-              {t('dashboard:welcome.title')}
-            </AlertTitle>
-            <AlertDescription display="block">
-              {t('dashboard:welcome.description')}
-              <br />
-            </AlertDescription>
-          </Box>
-        </Alert>
+        <Box>
+          <Card marginTop={1} padding={8} minWidth="100%">
+            <CardHeader display="flex" flexWrap="wrap">
+              <OneStat
+                title={`${t('dashboard:instantEnergy')} (kw/h)`}
+                value={globalInstantEnergy}
+                percentage={globalInstantEnergyPercentage}
+                percentageType={
+                  globalInstantEnergyPercentage > ZERO ? 'increase' : 'decrease'
+                }
+              />
+              <OneStat
+                title={`${t('dashboard:dailyEnergy')} (kw/h)`}
+                value={globalDailyEnergy}
+                percentage={globalDailyEnergyPercentage}
+                percentageType={
+                  globalDailyEnergyPercentage > ZERO ? 'increase' : 'decrease'
+                }
+              />
+              <OneStat
+                title={`${t('dashboard:noisePollution')} (Db)`}
+                value={globalNoisePollution}
+                percentage={undefined}
+                percentageType={undefined}
+              />
+            </CardHeader>
+          </Card>
+        </Box>
         <Box
           display="flex"
           flexDirection="row"
           flexWrap="wrap"
-          justifyContent="space-between"
-          alignItems="baseline"
+          justifyContent="center"
           marginTop={2}
         >
           {Object.entries(fakeStatistics).map(([m, stats]) => (
             <Card
               key={m}
-              onClick={() => setModule(m)}
+              onClick={() => {
+                setModule(m);
+              }}
               margin={1}
               display="flex"
               minWidth={220}
@@ -194,85 +308,91 @@ export default function PageDashboard() {
               shadow={m === module ? 'lg' : 'none'}
             >
               <CardHeader>
-                <Wind />
+                {(fakeStatistics[m] as any).needMaintenance ? (
+                  <RiErrorWarningFill
+                    size="40px"
+                    color={theme.colors.red[400]}
+                  />
+                ) : (
+                  <Wind />
+                )}
               </CardHeader>
               <CardBody>
                 <Box>
-                  <Text textAlign="center">{m === 'all' ? 'Tous' : m}</Text>
+                  <Text textAlign="center">{m}</Text>
 
                   <Box
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
                   >
-                    {m === 'M01x00210' ? (
-                      <LuBatteryWarning
-                        color={theme.colors.red[400]}
+                    <Box>
+                      <LuBatteryFull
+                        color={
+                          stats.battery > BATTERY_THRESHOLD
+                            ? theme.colors.green[600]
+                            : theme.colors.red[400]
+                        }
                         size="20px"
                       />
-                    ) : (
-                      <>
-                        <LuBatteryFull
-                          color={
-                            stats.battery > 60
-                              ? theme.colors.green[600]
-                              : theme.colors.red[400]
-                          }
-                          size="20px"
-                        />
-                        <Text
-                          color={
-                            stats.battery > 60
-                              ? theme.colors.green[600]
-                              : theme.colors.red[400]
-                          }
-                          fontWeight={800}
-                          ml={1}
-                        >
-                          {stats.battery}%
-                        </Text>
-                      </>
-                    )}
+                      <Text
+                        color={
+                          stats.battery > BATTERY_THRESHOLD
+                            ? theme.colors.green[600]
+                            : theme.colors.red[400]
+                        }
+                        fontWeight={800}
+                        ml={1}
+                      >
+                        {stats.battery}%
+                      </Text>
+                    </Box>
                   </Box>
                 </Box>
               </CardBody>
             </Card>
           ))}
         </Box>
-        {module === 'all' && (
-          <Alert status="warning" borderRadius="md" marginTop={3}>
-            <AlertIcon />
-            <Box flex="1">
-              <AlertDescription display="block">
-                {t('dashboard:warning.noModuleSelected')}
-                <br />
-              </AlertDescription>
-            </Box>
-          </Alert>
-        )}
-        <Card size="lg" align="center" padding={8} margin="10px 0px">
-          <StatGroup width="100%">
-            <Stat>
-              <StatLabel>{t('dashboard:instantEnergy')} (kw/h)</StatLabel>
-              <StatNumber>{instantEnergy}</StatNumber>
-              <StatHelpText>
-                <StatArrow
-                  type={instantEnergyPercentage > 0 ? 'increase' : 'decrease'}
-                />
-                {instantEnergyPercentage}%
-              </StatHelpText>
-            </Stat>
 
-            <Stat>
-              <StatLabel>{t('dashboard:dailyEnergy')} (kw/h)</StatLabel>
-              <StatNumber>{dailyEnergy}</StatNumber>
-              <StatHelpText>
-                <StatArrow
-                  type={dailyEnergyPercentage > 0 ? 'increase' : 'decrease'}
-                />
-                {dailyEnergyPercentage}%
-              </StatHelpText>
-            </Stat>
+        {account.isAdmin && needMaintenance && (
+          <Box marginTop={2} width="100%">
+            <Button
+              width="100%"
+              type="button"
+              colorScheme="red"
+              onClick={() => {
+                navigate('/admin/interventions');
+              }}
+            >
+              {t('dashboard:needMaintenance')}
+            </Button>
+          </Box>
+        )}
+
+        <Card align="center" padding={8} margin="10px 0px">
+          <StatGroup>
+            <OneStat
+              title={`${t('dashboard:instantEnergy')} (kw/h)`}
+              value={instantEnergy}
+              percentage={instantEnergyPercentage}
+              percentageType={
+                instantEnergyPercentage > ZERO ? 'increase' : 'decrease'
+              }
+            />
+            <OneStat
+              title={`${t('dashboard:dailyEnergy')} (kw/h)`}
+              value={dailyEnergy}
+              percentage={dailyEnergyPercentage}
+              percentageType={
+                dailyEnergyPercentage > ZERO ? 'increase' : 'decrease'
+              }
+            />
+            <OneStat
+              title={`${t('dashboard:noisePollution')} (Db)`}
+              value={noisePollution}
+              percentage={undefined}
+              percentageType={undefined}
+            />
           </StatGroup>
         </Card>
       </PageContent>

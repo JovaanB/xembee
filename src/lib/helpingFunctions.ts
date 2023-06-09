@@ -11,3 +11,7 @@ export const generateRandomNumber = ({
 export const generateRandomBoolean = () => {
   return Math.random() < 0.5;
 };
+
+export const calculAverage = (number: number, totalItems: number): number => {
+  return number / totalItems;
+};

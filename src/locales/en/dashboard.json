@@ -9,5 +9,7 @@
   },
   "selectModule": "Select a module",
   "instantEnergy": "Instant energy",
-  "dailyEnergy": "Daily energy"
+  "dailyEnergy": "Daily energy",
+  "noisePollution": "Noise pollution",
+  "needMaintenance": "This module requires maintenance, please consult the interventions page."
 }
