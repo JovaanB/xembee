@@ -22,7 +22,7 @@ import {
   PageTopBar,
 } from '@/components/Page';
 import { useToastError, useToastSuccess } from '@/components/Toast';
-import { UserForm } from '@/features/interventions/InterventionForm';
+import { InterventionForm } from '@/features/interventions/InterventionForm';
 import { Intervention } from '@/features/interventions/schema';
 import {
   useUserFormQuery,
@@ -51,7 +51,7 @@ export default function PageInterventionUpdate() {
         switch (errorKey) {
           case 'userexists':
             form.setErrors({
-              login: t('interventions:data.login.alreadyUsed'),
+              login: t('interventions:data.name.alreadyUsed'),
             });
             break;
           case 'emailexists':
@@ -111,7 +111,7 @@ export default function PageInterventionUpdate() {
         <Formiz connect={form}>
           <form noValidate onSubmit={form.submit}>
             <PageContent>
-              <UserForm />
+              <InterventionForm />
             </PageContent>
             <PageBottomBar>
               <ButtonGroup justifyContent="space-between">
