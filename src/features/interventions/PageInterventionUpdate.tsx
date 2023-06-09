@@ -22,7 +22,7 @@ import {
   PageTopBar,
 } from '@/components/Page';
 import { useToastError, useToastSuccess } from '@/components/Toast';
-import { UserForm } from '@/features/interventions/UserForm';
+import { UserForm } from '@/features/interventions/InterventionForm';
 import { Intervention } from '@/features/interventions/schema';
 import {
   useUserFormQuery,

@@ -68,11 +68,11 @@ export default function PageInterventions() {
               variant="@primary"
               leftIcon={<LuPlus />}
             >
-              {t('interventions:list.actions.createUser')}
+              {t('interventions:list.actions.createIntervention')}
             </Button>
             <IconButton
               display={{ base: 'flex', sm: 'none' }}
-              aria-label={t('interventions:list.actions.createUser')}
+              aria-label={t('interventions:list.actions.createIntervention')}
               as={Link}
               to="/admin/interventions/create"
               size="sm"
@@ -130,37 +130,36 @@ export default function PageInterventions() {
               </Alert>
             </Center>
           )}
-          {users.data?.content?.map((user) => (
-            <DataListRow as={LinkBox} key={user.id}>
+          {users.data?.content?.map((intervention) => (
+            <DataListRow as={LinkBox} key={intervention.id}>
               <DataListCell colName="id">
                 <Code maxW="full" fontSize="xs">
-                  {user.id}
+                  {intervention.id}
                 </Code>
               </DataListCell>
               <DataListCell colName="name">
                 <HStack maxW="100%">
                   <Box minW="0">
                     <Text noOfLines={1} maxW="full" fontWeight="bold">
-                      <LinkOverlay
-                        as={Link}
-                        to={`/admin/interventions/${user.id}`}
-                      >
-                        {user.name}
-                      </LinkOverlay>
+                      <LinkOverlay as={Link}>{intervention.name}</LinkOverlay>
                     </Text>
                   </Box>
                 </HStack>
               </DataListCell>
 
-              <DataListCell colName="comment">{user.comment}</DataListCell>
+              <DataListCell colName="comment">
+                {intervention.comment}
+              </DataListCell>
 
-              <DataListCell colName="module">{user.module}</DataListCell>
+              <DataListCell colName="module">
+                {intervention.module}
+              </DataListCell>
 
               <DataListCell colName="status">
-                <UserStatus status={user.status} />
+                <UserStatus status={intervention.status} />
               </DataListCell>
               <DataListCell colName="actions">
-                <UserActions user={user} />
+                <UserActions user={intervention} />
               </DataListCell>
             </DataListRow>
           ))}

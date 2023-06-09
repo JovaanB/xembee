@@ -11,56 +11,21 @@ import {
   PageContent,
   PageTopBar,
 } from '@/components/Page';
-import { useToastError, useToastSuccess } from '@/components/Toast';
-import { UserForm } from '@/features/interventions/UserForm';
+import { InterventionForm } from '@/features/interventions/InterventionForm';
 import { Intervention } from '@/features/interventions/schema';
-import { useUserCreate } from '@/features/interventions/service';
 
 export default function PageInterventionCreate() {
   const { t } = useTranslation(['common', 'interventions']);
   const navigate = useNavigate();
 
-  const toastError = useToastError();
-  const toastSuccess = useToastSuccess();
-
-  const createUser = useUserCreate({
-    onError: (error) => {
-      if (error.response) {
-        const { title, errorKey } = error.response.data;
-        toastError({
-          title: t('interventions:create.feedbacks.updateError.title'),
-          description: title,
-        });
-        switch (errorKey) {
-          case 'userexists':
-            form.setErrors({
-              login: t('interventions:data.login.alreadyUsed'),
-            });
-            break;
-          case 'emailexists':
-            form.setErrors({
-              email: t('interventions:data.email.alreadyUsed'),
-            });
-            break;
-        }
-      }
-    },
-    onSuccess: () => {
-      toastSuccess({
-        title: t('interventions:create.feedbacks.updateSuccess.title'),
-      });
-      navigate('/admin/interventions');
-    },
-  });
-
   const form = useForm<
     Pick<Intervention, 'id' | 'status' | 'name' | 'comment' | 'deleted'>
   >({
     onValidSubmit: (values) => {
-      const newUser = {
+      const newIntervention = {
         ...values,
       };
-      createUser.mutate(newUser);
+      console.log({ newIntervention });
     },
   });
 
@@ -72,18 +37,14 @@ export default function PageInterventionCreate() {
             <Heading size="md">{t('interventions:create.title')}</Heading>
           </PageTopBar>
           <PageContent>
-            <UserForm />
+            <InterventionForm />
           </PageContent>
           <PageBottomBar>
             <ButtonGroup justifyContent="space-between">
               <Button onClick={() => navigate('/admin/interventions')}>
                 {t('common:actions.cancel')}
               </Button>
-              <Button
-                type="submit"
-                variant="@primary"
-                isLoading={createUser.isLoading}
-              >
+              <Button type="submit" variant="@primary">
                 {t('interventions:create.action.save')}
               </Button>
             </ButtonGroup>

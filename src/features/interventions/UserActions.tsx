@@ -100,7 +100,6 @@ export const UserActions = ({ user, ...rest }: UserActionProps) => {
       });
     },
   });
-  const removeUser = () => userRemove.mutate(user);
   const isRemovalLoading = userRemove.isLoading;
 
   return (
@@ -113,7 +112,6 @@ export const UserActions = ({ user, ...rest }: UserActionProps) => {
         <MenuList>
           <MenuItem
             as={Link}
-            to={`/admin/interventions/${user.id}`}
             icon={<Icon icon={LuEdit} fontSize="lg" color="gray.400" />}
           >
             {t('common:actions.edit')}
@@ -122,7 +120,6 @@ export const UserActions = ({ user, ...rest }: UserActionProps) => {
           <MenuDivider />
           <ConfirmMenuItem
             icon={<Icon icon={LuTrash2} fontSize="lg" color="gray.400" />}
-            onClick={removeUser}
           >
             {t('common:actions.delete')}
           </ConfirmMenuItem>

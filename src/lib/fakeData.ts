@@ -5,7 +5,7 @@ export const initialFakeStatisticsData = {
     dailyEnergy: 377,
     instantEnergyPercentage: 1,
     dailyEnergyPercentage: 1,
-    noisePollution: 0,
+    noisePollution: 1,
     needMaintenance: false,
   },
   M02x00210: {
@@ -14,7 +14,7 @@ export const initialFakeStatisticsData = {
     dailyEnergy: 377,
     instantEnergyPercentage: 1,
     dailyEnergyPercentage: 1,
-    noisePollution: 0,
+    noisePollution: 1,
     needMaintenance: false,
   },
   M03x00210: {
@@ -23,7 +23,7 @@ export const initialFakeStatisticsData = {
     dailyEnergy: 377,
     instantEnergyPercentage: 1,
     dailyEnergyPercentage: 1,
-    noisePollution: 0,
+    noisePollution: 1,
     needMaintenance: false,
   },
   M04x00210: {
@@ -32,7 +32,7 @@ export const initialFakeStatisticsData = {
     dailyEnergy: 377,
     instantEnergyPercentage: 1,
     dailyEnergyPercentage: 1,
-    noisePollution: 0,
+    noisePollution: 1,
     needMaintenance: false,
   },
   M05x00210: {
@@ -46,11 +46,11 @@ export const initialFakeStatisticsData = {
   },
   M06x00210: {
     battery: 25,
-    instantEnergy: 0,
-    dailyEnergy: 0,
-    instantEnergyPercentage: 0,
-    dailyEnergyPercentage: 0,
-    noisePollution: 0,
+    instantEnergy: 1,
+    dailyEnergy: 1,
+    instantEnergyPercentage: 1,
+    dailyEnergyPercentage: 1,
+    noisePollution: 1,
     needMaintenance: false,
   },
 };

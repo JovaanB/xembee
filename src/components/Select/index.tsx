@@ -9,6 +9,7 @@ import {
   useToken,
 } from '@chakra-ui/react';
 import type { CSSObject } from '@emotion/react';
+import { useTranslation } from 'react-i18next';
 import ReactSelect, { GroupBase, Props } from 'react-select';
 import AsyncReactSelect from 'react-select/async';
 import AsyncCreatableReactSelect from 'react-select/async-creatable';
@@ -65,6 +66,7 @@ const SelectInner = <
 ) => {
   const theme = useTheme();
   const isLightMode = useColorModeValue(true, false);
+  const { t } = useTranslation(['common']);
 
   const stylesFromTheme: TODO = useStyleConfig('Select', {
     size,
@@ -275,7 +277,9 @@ const SelectInner = <
       styles={selectStyle}
       menuPortalTarget={document.body}
       {...(formatCreateLabel ? { formatCreateLabel } : {})}
-      placeholder={placeholder ? String(placeholder) : 'Select...'}
+      placeholder={
+        placeholder ? String(placeholder) : t('common:actions.select')
+      }
       menuPlacement="auto"
       ref={ref}
       {...asyncProps}

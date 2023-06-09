@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 
 import { FieldProps, useField } from '@formiz/core';
+import { useTranslation } from 'react-i18next';
 import { GroupBase } from 'react-select';
 
 import { FormGroup, FormGroupProps } from '@/components/FormGroup';
@@ -51,6 +52,7 @@ export const FieldSelect = <
     ...rest
   } = otherProps;
   const [isTouched, setIsTouched] = useState(false);
+  const { t } = useTranslation(['common']);
   const showError = !isValid && ((isTouched && !isPristine) || isSubmitted);
 
   useEffect(() => {
@@ -75,7 +77,7 @@ export const FieldSelect = <
         value={options?.find((option) => option.value === value) ?? undefined}
         onFocus={() => setIsTouched(false)}
         onBlur={() => setIsTouched(true)}
-        placeholder={placeholder || 'Select...'}
+        placeholder={placeholder || t('common:actions.select')}
         onChange={(fieldValue: TODO) =>
           setValue(fieldValue ? fieldValue.value : null)
         }

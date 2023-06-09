@@ -93,6 +93,7 @@ export default function PageDashboard() {
       const newState = { ...prevState };
 
       Object.entries(prevState).forEach(([key, value]) => {
+        console.log({ value: value.needMaintenance });
         const newInstantEnergy = value.needMaintenance
           ? ZERO
           : generateRandomNumber({
@@ -369,32 +370,34 @@ export default function PageDashboard() {
           </Box>
         )}
 
-        <Card align="center" padding={8} margin="10px 0px">
-          <StatGroup>
-            <OneStat
-              title={`${t('dashboard:instantEnergy')} (kw/h)`}
-              value={instantEnergy}
-              percentage={instantEnergyPercentage}
-              percentageType={
-                instantEnergyPercentage > ZERO ? 'increase' : 'decrease'
-              }
-            />
-            <OneStat
-              title={`${t('dashboard:dailyEnergy')} (kw/h)`}
-              value={dailyEnergy}
-              percentage={dailyEnergyPercentage}
-              percentageType={
-                dailyEnergyPercentage > ZERO ? 'increase' : 'decrease'
-              }
-            />
-            <OneStat
-              title={`${t('dashboard:noisePollution')} (Db)`}
-              value={noisePollution}
-              percentage={undefined}
-              percentageType={undefined}
-            />
-          </StatGroup>
-        </Card>
+        {selectedModule && (
+          <Card align="center" padding={8} margin="10px 0px">
+            <StatGroup>
+              <OneStat
+                title={`${t('dashboard:instantEnergy')} (kw/h)`}
+                value={instantEnergy}
+                percentage={instantEnergyPercentage}
+                percentageType={
+                  instantEnergyPercentage > ZERO ? 'increase' : 'decrease'
+                }
+              />
+              <OneStat
+                title={`${t('dashboard:dailyEnergy')} (kw/h)`}
+                value={dailyEnergy}
+                percentage={dailyEnergyPercentage}
+                percentageType={
+                  dailyEnergyPercentage > ZERO ? 'increase' : 'decrease'
+                }
+              />
+              <OneStat
+                title={`${t('dashboard:noisePollution')} (Db)`}
+                value={noisePollution}
+                percentage={undefined}
+                percentageType={undefined}
+              />
+            </StatGroup>
+          </Card>
+        )}
       </PageContent>
     </Page>
   );

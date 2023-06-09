@@ -32,18 +32,18 @@
   "list": {
     "title": "Gestion des interventions",
     "actions": {
-      "createUser": "Créer une intervention",
+      "createIntervention": "Créer une intervention",
       "refetch": "Réessayer"
     }
   },
   "data": {
-    "login": {
-      "label": "Nom d'utilisateur",
-      "required": "Le nom d'utilisateur est requis",
-      "alreadyUsed": "Nom d'utilisateur déjà utilisé",
-      "invalid": "Le nom d'utilisateur n'est pas valide, n'utilisez pas de caractères spéciaux",
-      "tooLong": "Le nom d'utilisateur est trop long (max. {max} caractères)",
-      "tooShort": "Le nom d'utilisateur est trop court (min. {{min}} caractères)"
+    "name": {
+      "label": "Nom",
+      "required": "Le nom est requis",
+      "alreadyUsed": "Nom déjà utilisé",
+      "invalid": "Le nom n'est pas valide, n'utilisez pas de caractères spéciaux",
+      "tooLong": "Le nom est trop long (max. {max} caractères)",
+      "tooShort": "Le nom est trop court (min. {{min}} caractères)"
     },
     "email": {
       "label": "Email",
@@ -55,9 +55,6 @@
     },
     "id": {
       "label": "ID"
-    },
-    "name": {
-      "label": "Nom"
     },
     "comment": {
       "label": "Commentaire"
@@ -104,16 +101,16 @@
     }
   },
   "create": {
-    "title": "Créer un nouvel utilisateur",
+    "title": "Créer une nouvelle intervention",
     "action": {
-      "save": "Créer l'utilisateur"
+      "save": "Créer l'intervention"
     },
     "feedbacks": {
       "updateError": {
         "title": "Échec de la création"
       },
       "updateSuccess": {
-        "title": "Utilisateur créé avec succès"
+        "title": "Intervention créé avec succès"
       }
     }
   }

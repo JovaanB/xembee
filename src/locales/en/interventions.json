@@ -2,7 +2,7 @@
   "list": {
     "title": "Interventions Management",
     "actions": {
-      "createUser": "Create intervention",
+      "createIntervention": "Create intervention",
       "refetch": "Retry"
     }
   },
@@ -37,13 +37,13 @@
     }
   },
   "data": {
-    "login": {
-      "alreadyUsed": "Username already used",
-      "label": "Username",
-      "required": "Username is required",
-      "tooShort": "Username is too short (min. {{min}} characters)",
-      "tooLong": "Username is too long (max. {{max}} characters)",
-      "invalid": "Username is invalid, don't use special characters"
+    "name": {
+      "alreadyUsed": "Name already used",
+      "label": "Name",
+      "required": "Name is required",
+      "tooShort": "Name is too short (min. {{min}} characters)",
+      "tooLong": "Name is too long (max. {{max}} characters)",
+      "invalid": "Name is invalid, don't use special characters"
     },
     "email": {
       "label": "Email",
@@ -55,9 +55,6 @@
     },
     "id": {
       "label": "ID"
-    },
-    "name": {
-      "label": "Name"
     },
     "comment": {
       "label": "Comment"
@@ -92,7 +89,7 @@
   },
   "update": {
     "action": {
-      "save": "Update User"
+      "save": "Update Intervention"
     },
     "feedbacks": {
       "updateError": {
@@ -109,12 +106,12 @@
         "title": "Creation failed"
       },
       "updateSuccess": {
-        "title": "User created with success"
+        "title": "Intervention created with success"
       }
     },
     "action": {
-      "save": "Create User"
+      "save": "Create Intervention"
     },
-    "title": "Create New User"
+    "title": "Create New Intervention"
   }
 }
