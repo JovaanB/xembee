@@ -39,7 +39,7 @@ import {
 import { AdminNav } from '@/features/admin/AdminNav';
 import { useInterventionList } from '@/features/interventions/service';
 
-import { UserActions } from './UserActions';
+import { InterventionActions } from './InterventionActions';
 import { UserStatus } from './UserStatus';
 
 export default function PageInterventions() {
@@ -159,7 +159,7 @@ export default function PageInterventions() {
                 <UserStatus status={intervention.status} />
               </DataListCell>
               <DataListCell colName="actions">
-                <UserActions user={intervention} />
+                <InterventionActions intervention={intervention} />
               </DataListCell>
             </DataListRow>
           ))}

@@ -21,13 +21,9 @@ import {
   PageContent,
   PageTopBar,
 } from '@/components/Page';
-import { useToastError, useToastSuccess } from '@/components/Toast';
 import { InterventionForm } from '@/features/interventions/InterventionForm';
 import { Intervention } from '@/features/interventions/schema';
-import {
-  useUserFormQuery,
-  useUserUpdate,
-} from '@/features/interventions/service';
+import { useInterventionFormQuery } from '@/features/interventions/service';
 import { Loader } from '@/layout/Loader';
 
 export default function PageInterventionUpdate() {
@@ -35,50 +31,14 @@ export default function PageInterventionUpdate() {
 
   const params = useParams();
   const navigate = useNavigate();
-  const user = useUserFormQuery(params?.login?.toString());
-
-  const toastSuccess = useToastSuccess();
-  const toastError = useToastError();
-
-  const userUpdate = useUserUpdate({
-    onError: (error) => {
-      if (error.response) {
-        const { title, errorKey } = error.response.data;
-        toastError({
-          title: t('interventions:update.feedbacks.updateError.title'),
-          description: title,
-        });
-        switch (errorKey) {
-          case 'userexists':
-            form.setErrors({
-              login: t('interventions:data.name.alreadyUsed'),
-            });
-            break;
-          case 'emailexists':
-            form.setErrors({
-              email: t('interventions:data.email.alreadyUsed'),
-            });
-            break;
-        }
-      }
-    },
-    onSuccess: () => {
-      toastSuccess({
-        title: t('interventions:update.feedbacks.updateSuccess.title'),
-      });
-      navigate(-1);
-    },
-  });
+  const intervention = useInterventionFormQuery(params?.id);
 
   const form = useForm<Omit<Intervention, 'id'>>({
-    ready: !user.isLoading,
-    initialValues: user.data,
+    ready: !intervention.isLoading,
+    initialValues: intervention.data,
     onValidSubmit: (values) => {
-      if (!user.data?.id) return null;
-      userUpdate.mutate({
-        id: user.data.id,
-        ...values,
-      });
+      if (!intervention.data?.id) return null;
+      console.log({ values });
     },
   });
 
@@ -87,27 +47,26 @@ export default function PageInterventionUpdate() {
       <PageTopBar showBack onBack={() => navigate('/admin/interventions')}>
         <HStack spacing="4">
           <Box flex="1">
-            {user.isLoading || user.isError ? (
+            {intervention.isLoading || intervention.isError ? (
               <SkeletonText maxW="6rem" noOfLines={2} />
             ) : (
               <Stack spacing="0">
-                <Heading size="sm">{user.data?.id}</Heading>
+                <Heading size="sm">{intervention.data?.id}</Heading>
                 <Text
                   fontSize="xs"
                   color="gray.600"
                   _dark={{ color: 'gray.300' }}
                 >
-                  {t('interventions:data.id.label')}: {user.data?.id}
+                  {t('interventions:data.id.label')}: {intervention.data?.id}
                 </Text>
               </Stack>
             )}
           </Box>
-          {!!user && <Box>{user.status}</Box>}
         </HStack>
       </PageTopBar>
-      {user.isLoading && <Loader />}
-      {user.isError && <ErrorPage errorCode={404} />}
-      {user.isSuccess && (
+      {intervention.isLoading && <Loader />}
+      {intervention.isError && <ErrorPage errorCode={404} />}
+      {intervention.isSuccess && (
         <Formiz connect={form}>
           <form noValidate onSubmit={form.submit}>
             <PageContent>
@@ -118,11 +77,7 @@ export default function PageInterventionUpdate() {
                 <Button onClick={() => navigate('/admin/interventions')}>
                   {t('common:actions.cancel')}
                 </Button>
-                <Button
-                  type="submit"
-                  variant="@primary"
-                  isLoading={userUpdate.isLoading}
-                >
+                <Button type="submit" variant="@primary">
                   {t('interventions:update.action.save')}
                 </Button>
               </ButtonGroup>

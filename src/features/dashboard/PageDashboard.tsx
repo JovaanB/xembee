@@ -360,6 +360,7 @@ export default function PageDashboard() {
             <Button
               width="100%"
               type="button"
+              padding={1}
               colorScheme="red"
               onClick={() => {
                 navigate('/admin/interventions');

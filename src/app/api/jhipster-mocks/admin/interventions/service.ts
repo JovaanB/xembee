@@ -21,6 +21,11 @@ export const formatInterventionFromDb = <U extends Partial<Intervention>>(
   };
 };
 
+export const getInterventionById = async (id: number) => {
+  const intervention = await db.intervention.findUnique({ where: { id } });
+  return formatInterventionFromDb(intervention);
+};
+
 export const getInterventionList = async (
   options: { skip?: number; take?: number } = {}
 ) => {
